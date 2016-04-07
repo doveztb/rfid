@@ -20,7 +20,7 @@ class UserMessageModel extends Model{
     protected $_validate = array(
         array('title','require','消息必须填写', self::MUST_VALIDATE, 'regex', self::MODEL_BOTH),
         array('title', '1,1024', '消息长度为1-32个字符', self::EXISTS_VALIDATE, 'length', self::MODEL_BOTH),
-        array('to_uid','require','收信人必须填写', self::MUST_VALIDATE, 'regex', self::MODEL_BOTH),
+//      array('to_uid','require','收信人必须填写', self::MUST_VALIDATE, 'regex', self::MODEL_BOTH),
     );
 
     /**
@@ -57,10 +57,12 @@ class UserMessageModel extends Model{
         $msg_data['type']     = $data['type'] ? : 0; //消息类型
         $msg_data['from_uid'] = $data['from_uid'] ? : 0; //消息发信人
         $result = $this->create($msg_data);
-        if($result){
-            hook('SendMessage', $msg_data); //发送消息钩子，用于消息发送途径的扩展
-            return $this->add($result);
-        }
+		return $$msg_data;
+//		return D('UserMessage')->add($result);
+//      if($result){
+//          hook('SendMessage', $msg_data); //发送消息钩子，用于消息发送途径的扩展
+//          return $this->add($result);
+//      }
     }
 
     /**
