@@ -1,23 +1,14 @@
 <?php
-// +----------------------------------------------------------------------
-// | CoreThink [ Simple Efficient Excellent ]
-// +----------------------------------------------------------------------
-// | Copyright (c) 2014 http://www.corethink.cn All rights reserved.
-// +----------------------------------------------------------------------
-// | Author: jry <598821125@qq.com> <http://www.corethink.cn>
-// +----------------------------------------------------------------------
 namespace Admin\Controller;
 use Think\Controller;
 /**
  * 消息控制器
- * @author jry <598821125@qq.com>
  */
 class UserMessageController extends AdminController{
 
     /**
      * 默认方法
      * @param $type 消息类型
-     * @author jry <598821125@qq.com>
      */
     public function index(){
         //搜索
@@ -60,11 +51,11 @@ class UserMessageController extends AdminController{
 
     /**
      * 新增消息
-     * @author jry <598821125@qq.com>
      */
     public function add(){
     	$user_message_object = D('UserMessage');
 		$uid=is_login();
+		$group=D('User')->where("id='$uid'")->getField('group');
 //		$companyid=D('User')->where("id='$uid'")->getField('companyid');
 //		$map1['companyid']=$companyid;
 //		$map1['group']='0';
@@ -75,9 +66,9 @@ class UserMessageController extends AdminController{
         if(IS_POST){
             $user_message_object = D('UserMessage');
 			$data=$_POST;
-			
-			$data['from_uid']=$uid;
-			if($_POST['type'] =='0'){
+			if($group == '3'){
+				$data['from_uid']=$uid;
+			if($_POST['to_all'] =='1'){
 				$companyid=D('User')->where("id='$uid'")->getField('companyid');
 				$map1['companyid']=$companyid;
 				$map1['group']='0';
@@ -85,7 +76,7 @@ class UserMessageController extends AdminController{
 //				$data['to_uid']=$to_uid;
 				foreach($to_uid as $key=>$val){
 					$data['to_uid']=$val;
-					$result = $user_message_object->add($data);
+					$result = $user_message_object->sendMessage($data);
 				}
 				
 			}else{
@@ -98,24 +89,61 @@ class UserMessageController extends AdminController{
             }else{
                 $this->error('发送消息失败'.$user_message_object->getError());
             }
+		}else{
+			$data['from_uid']=$uid;
+			if($_POST['to_all'] =='1'){
+				$map['id']  = array('gt',1);
+				$to_uid=D('User')->where($map)->getField('id',true);				
+//				$data['to_uid']=$to_uid;
+				foreach($to_uid as $key=>$val){
+					$data['to_uid']=$val;
+					$result = $user_message_object->sendMessage($data);
+				}
+				
+			}else{
+				$result = $user_message_object->sendMessage($data);
+			}
+            
+            if($result){
+//          	var_dump($data);die();
+                 $this->success('发送消息成功', U('index'));
+            }else{
+                $this->error('发送消息失败'.$user_message_object->getError());
+            }
+		}
+			
         }else{
-            //使用FormBuilder快速建立表单页面。
+        	if($group == '3'){
+        		//使用FormBuilder快速建立表单页面。
             $builder = new \Common\Builder\FormBuilder();
             $builder->setMetaTitle('新增消息') //设置页面标题
                     ->setPostUrl(U('add')) //设置表单提交地址
                     ->addFormItem('type', 'select', '消息类型', '系统消息、评论消息、私信消息',$user_message_object->message_type())
-//                  ->addFormItem('to_all', 'checkbox', '所有人', '系统通知请选择')
+                    ->addFormItem('to_all', 'radio', '所有人', '请选择是或不是',array('1'=>'是','2'=>'不是'))
                     ->addFormItem('to_uid', 'num', '消息收信用户', '若是系统消息不用填写')
                     ->addFormItem('title', 'textarea', '消息标题', '消息标题')
                     ->addFormItem('content', 'kindeditor', '消息内容', '消息内容')
                     ->addFormItem('sort', 'num', '排序', '用于显示的顺序')
                     ->display();
+        	}else{
+        		//使用FormBuilder快速建立表单页面。
+            $builder = new \Common\Builder\FormBuilder();
+            $builder->setMetaTitle('新增消息') //设置页面标题
+                    ->setPostUrl(U('add')) //设置表单提交地址
+                    ->addFormItem('type', 'select', '消息类型', '系统消息、评论消息、私信消息',$user_message_object->message_type())
+                    ->addFormItem('to_all', 'radio', '所有人', '请选择是或不是',array('1'=>'是','2'=>'不是'))
+                    ->addFormItem('to_uid', 'num', '消息收信用户', '填写接收人id（所有人选择是则不用填写）')
+                    ->addFormItem('title', 'textarea', '消息标题', '消息标题')
+                    ->addFormItem('content', 'kindeditor', '消息内容', '消息内容')
+                    ->addFormItem('sort', 'num', '排序', '用于显示的顺序')
+                    ->display();
+        	}
+            
         }
     }
 
     /**
      * 编辑消息
-     * @author jry <598821125@qq.com>
      */
     public function edit($id){
         if(IS_POST){

@@ -52,18 +52,18 @@
                             <php>if(C('WEB_SITE_LOGO')):</php>
                                 <a class="navbar-brand" href="__ROOT__/"><img alt="logo" class="logo" src="{$Think.config.WEB_SITE_LOGO|get_cover}"></a>
                             <php>else:</php>
-                                <a class="navbar-brand" href="__ROOT__/"><img alt="logo" class="logo" src="__HOME_IMG__/logo/logo_with_title.png"></a>
+                                <a class="navbar-brand" href="{:U('Home/Document/index/cid/1')}"><img alt="logo" class="logo" src="__HOME_IMG__/logo/logo_with_title.png"></a>
                             <php>endif;</php>
                         </div>
                         <div class="collapse navbar-collapse navbar-collapse-main">
                             <ul class="nav navbar-nav navbar-left">
-                                <li><a href="__ROOT__/">首页</a></li>
+                                <!--<li><a href="__ROOT__/">首页</a></li>-->
                                 <corethink:category_list name="vo">
                                     <li <if condition='$vo.id eq $__CURRENT_CATEGORY__'> class="active"</if> >
                                         <a href="{:U('Home/Document/index', array('cid' => $vo['id']))}">{$vo.title}</a>
                                     </li>
                                 </corethink:category_list>
-                                <li><a style="padding-left:20px;padding-right:20px;" href="__ROOT__/"><i class="fa fa-search fa-lg"></i></a></li>
+                                <!--<li><a style="padding-left:20px;padding-right:20px;" href="__ROOT__/"><i class="fa fa-search fa-lg"></i></a></li>-->
                             </ul>
                             <ul class="nav navbar-nav navbar-right">
                                 <present name="__USER__">
@@ -84,14 +84,14 @@
                                                     <span class="<notempty name='__NEW_MESSAGE__'>red-dot</notempty>"> 消息中心 </span>
                                                 </a>
                                             </li>
-                                            <li><a href="{:U('Home/Addon/index')}"><i class="fa fa-weixin"></i> 微＋平台</a></li>
+                                            <!--<li><a href="{:U('Home/Addon/index')}"><i class="fa fa-weixin"></i> 微＋平台</a></li>-->
                                             <li class="divider hidden-xs"></li>
                                             <li><a href="{:U('Home/User/logout')}" class="ajax-get"><i class="fa fa-sign-out"></i> 退出登录</a></li>
                                         </ul>
                                     </li>
                                 <else />
                                     <li><a href="#" data-toggle="modal" data-target="#login-modal">登录</a></li>
-                                    <li><a href="{:U('Home/User/register')}">注册</a></li>
+                                    <!--<li><a href="{:U('Home/User/register')}">注册</a></li>-->
                                 </present>
                             </ul>
                         </div>
@@ -151,7 +151,7 @@
                             <ul class="list-inline text-center pull-left">
                                 <li>{:C('WEB_SITE_COPYRIGHT')}</li>
                                 <li><a class="icp" href="http://www.miibeian.gov.cn/" target="_blank">{:C('WEB_SITE_ICP')}</a></li>
-                                <li>
+                                <!--<li>
                                     <span>
                                         <a class="text-muted" href="mailto:admin@corethink.cn"><i class="fa fa-envelope"></i></a>
                                     </span>
@@ -171,15 +171,15 @@
                                     <span>
                                         <a class="text-muted" target="_blank" href="http://weibo.com/u/5667168319"><i class="fa fa-weibo"></i></a>
                                     </span>
-                                </li>
+                                </li>-->
                             </ul>
-                            <ul class="list-inline text-center pull-right">
+                            <!--<ul class="list-inline text-center pull-right">
                                 <li class="pull-right">
                                     <a href="{:C('WEBSITE_DOMAIN')}" title="轻量级WEB产品开发框架">
                                         <span class="label label-default">CorerThink v{:C('CURRENT_VERSION')}</span>
                                     </a>
                                 </li>
-                            </ul>
+                            </ul>-->
                         </div>
                     </div>
                 </footer>
@@ -229,15 +229,15 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="item-label">
+                                    <!--<label class="item-label">
                                         <a href="{:U('Home/User/register')}">立刻注册</a>
                                         <a href="{:U('Home/User/resetPassword')}">忘记密码</a>
-                                    </label>
+                                    </label>-->
                                     <button type="submit" class="btn btn-primary btn-block ajax-post submit" target-form="login-modal" data-loading-text="正在登录...">登 录</button>
                                 </div>
                             </fieldset>
                         </form>
-                        {:hook('SyncLogin')} <!-- 第三方登陆钩子 -->
+                        <!--{:hook('SyncLogin')}  第三方登陆钩子--> 
                     </div>
                 </div>
             </div>
