@@ -167,11 +167,11 @@ class LeavesController extends AdminController{
 					$result = D('UserMessage')->sendMessage($data1);
 					
 					if($_POST['result'] == '1'){
-						$a=date("Y-m-d",time());
+						$a=date("Y-m",time());
 						$map1['uid']=$_POST['uid'];
 						$result_month=D('AttendanceMonth')->where($map1)->select();
 							foreach($result_month as $key=>$val){
-								$b=date("Y-m-d",$val['createtime']);
+								$b=date("Y-m",$val['createtime']);
 								if($a == $b){
 									//update
 									$AttendanceMonth = D('AttendanceMonth'); // 
