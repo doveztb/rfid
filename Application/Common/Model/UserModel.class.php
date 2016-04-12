@@ -92,7 +92,7 @@ class UserModel extends Model{
     public function user_sex($id){
         $list[0] = '保密';
         $list[1] = '男';
-        $list[-1] = '男';
+        $list[-1] = '女';
         return $id ? $list[$id] : $list;
     }
 
