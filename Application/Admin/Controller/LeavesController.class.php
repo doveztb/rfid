@@ -167,39 +167,31 @@ class LeavesController extends AdminController{
 					$result = D('UserMessage')->sendMessage($data1);
 					
 					if($_POST['result'] == '1'){
-						$a=date("Y-m",time());
+						$beginThismonth=mktime(0,0,0,date('m'),1,date('Y'));
+						$endThismonth=mktime(23,59,59,date('m'),date('t'),date('Y'));
 						$map1['uid']=$_POST['uid'];
-						$result_month=D('AttendanceMonth')->where($map1)->select();
-							foreach($result_month as $key=>$val){
-								$b=date("Y-m",$val['createtime']);
-								if($a == $b){
-									//update
-									$AttendanceMonth = D('AttendanceMonth'); // 
-									// 要修改的数据对象属性赋值
-									$data2= $_POST['days'];
+						$map1['createtime']=array(array('gt',$beginThismonth),array('lt',$endThismonth));
+						$result_month=D('AttendanceMonth')->where($map1)->find();			
+						if($result_month){
+							//update
+							$AttendanceMonth = D('AttendanceMonth'); // 
+							// 要修改的数据对象属性赋值
+							$data2= $_POST['days'];
 //									$data['email'] = 'ThinkPHP@gmail.com';
-									$map2['id']=$val['id'];
-									$s=$AttendanceMonth->where($map2)->setInc('leavedays',$data2); // 根据条件更新记录
-								}else{
-									//add
-									$AttendanceMonth = D('AttendanceMonth'); // 
-									// 要修改的数据对象属性赋值
-									$data3['leavedays'] = $_POST['days'];
-									$data3['uid'] = $_POST['uid'];
-									$data3['createtime'] = time();
-//									$data3['companyid'] = time();
-									$c=$AttendanceMonth->data($data3)->add(); // 根据条件更新记录
-//									var_dump($data3);die();
-									if($c){
-										echo "233";
-									}else{
-										echo "09";
-									}
-								}
-							}
-						
-					}
-					
+							$map2['id']=$result_month['id'];
+							$s=$AttendanceMonth->where($map2)->setInc('leavedays',$data2); // 根据条件更新记录
+						}else{
+							//add
+							$AttendanceMonth = D('AttendanceMonth'); 
+							// 要修改的数据对象属性赋值
+							$data3['leavedays'] = $_POST['days'];
+							$data3['uid'] = $_POST['uid'];
+							$data3['createtime'] = time();
+							$data3['status'] = 1;
+							$data3['companyid'] = $_POST['companyid'];
+							$c=$AttendanceMonth->data($data3)->add(); // 添加
+						}
+						}
                     $this->success('更新成功', U('index'));
                 }else{
                     $this->error('更新失败');
@@ -213,6 +205,7 @@ class LeavesController extends AdminController{
             $builder->setMetaTitle('审核') //设置页面标题
                     ->setPostUrl(U('edit')) //设置表单提交地址
                     ->addFormItem('id', 'hidden', 'ID', 'ID')
+					->addFormItem('companyid', 'hidden', 'ID', 'ID')
 					->addFormItem('uid', 'num', '请假人', '请假人')
                     ->addFormItem('title', 'text', '请假原因', '请假原因')
                     ->addFormItem('timestart', 'time', '开始时间', '开始时间')

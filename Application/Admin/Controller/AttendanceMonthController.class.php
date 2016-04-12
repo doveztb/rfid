@@ -1,31 +1,22 @@
 <?php
-// +----------------------------------------------------------------------
-// | CoreThink [ Simple Efficient Excellent ]
-// +----------------------------------------------------------------------
-// | Copyright (c) 2014 http://www.corethink.cn All rights reserved.
-// +----------------------------------------------------------------------
-// | Author: jry <598821125@qq.com> <http://www.corethink.cn>
-// +----------------------------------------------------------------------
 namespace Admin\Controller;
 use Think\Controller;
 /**
- * 后台用户控制器
- * @author jry <598821125@qq.com>
+ * 考勤月记录
  */
 class AttendanceMonthController extends AdminController{
     /**
      * 用户列表
-     * @author jry <598821125@qq.com>
      */
     public function index(){
         //搜索
         $keyword = I('keyword', '', 'string');
         $condition = array('like','%'.$keyword.'%');
-        $map['id|username|email|mobile'] = array($condition, $condition, $condition, $condition,'_multi'=>true);
+        $map['id|companyid'] = array($condition, $condition,'_multi'=>true);
 
         //获取所有用户
         $map['status'] = array('egt', '0'); //禁用和正常状态
-        $data_list = D('User')->page(!empty($_GET["p"])?$_GET["p"]:1, C('ADMIN_PAGE_ROWS'))->where($map)->order('sort desc,id desc')->select();
+        $data_list = D('AttendanceMonth')->page(!empty($_GET["p"])?$_GET["p"]:1, C('ADMIN_PAGE_ROWS'))->where($map)->order('id desc')->select();
         $page = new \Common\Util\Page(D('User')->where($map)->count(), C('ADMIN_PAGE_ROWS'));
 
         //使用Builder快速建立列表页面。
@@ -143,4 +134,60 @@ class AttendanceMonthController extends AdminController{
                     ->display();
         }
     }
+
+ public function last(){
+        //搜索
+        $keyword = I('keyword', '', 'string');
+        $condition = array('like','%'.$keyword.'%');
+        $map['id|companyid'] = array($condition, $condition,'_multi'=>true);
+
+        //获取所有用户
+        $map['status'] = array('egt', '0'); //禁用和正常状态
+        $data_list = D('AttendanceMonth')->page(!empty($_GET["p"])?$_GET["p"]:1, C('ADMIN_PAGE_ROWS'))->where($map)->order('id desc')->select();
+        $page = new \Common\Util\Page(D('User')->where($map)->count(), C('ADMIN_PAGE_ROWS'));
+
+        //使用Builder快速建立列表页面。
+        $builder = new \Common\Builder\ListBuilder();
+        $builder->setMetaTitle('用户列表') //设置页面标题
+                ->addTopButton('addnew')  //添加新增按钮
+                ->addTopButton('resume')  //添加启用按钮
+                ->addTopButton('forbid')  //添加禁用按钮
+                ->addTopButton('delete')  //添加删除按钮
+                ->setSearch('请输入ID/用户名/邮箱/手机号', U('index'))
+                ->addTableColumn('id', 'UID')
+                ->addTableColumn('usertype', '类型')
+                ->addTableColumn('username', '用户名')
+                ->addTableColumn('email', '邮箱')
+                ->addTableColumn('mobile', '手机号')
+                ->addTableColumn('vip', 'VIP')
+                ->addTableColumn('score', '积分')
+                ->addTableColumn('money', '余额')
+                ->addTableColumn('last_login_time', '最后登录时间时间', 'time')
+                ->addTableColumn('reg_type', '注册方式')
+                ->addTableColumn('sort', '排序', 'text')
+                ->addTableColumn('status', '状态', 'status')
+                ->addTableColumn('right_button', '操作', 'btn')
+                ->setTableDataList($data_list) //数据列表
+                ->setTableDataPage($page->show()) //数据列表分页
+                ->addRightButton('edit')   //添加编辑按钮
+                ->addRightButton('forbid') //添加禁用/启用按钮
+                ->addRightButton('delete') //添加删除按钮
+                ->display();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
