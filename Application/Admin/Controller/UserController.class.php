@@ -27,6 +27,7 @@ class UserController extends AdminController{
 		if($groupid == '3'){	//获取属于同一公司的员工
 			$companyid=D('User')->where("id='$uid'")->getField('companyid');
 			$map['companyid']=$companyid;
+			$map['group']=0;
 		}
         $map['status'] = array('egt', '0'); //禁用和正常状态
         $data_list = D('User')->page(!empty($_GET["p"])?$_GET["p"]:1, C('ADMIN_PAGE_ROWS'))->where($map)->order('sort desc,id desc')->select();
@@ -45,6 +46,8 @@ class UserController extends AdminController{
                 ->addTableColumn('username', '用户名')
                 ->addTableColumn('email', '邮箱')
                 ->addTableColumn('mobile', '手机号')
+				->addTableColumn('companyid', '公司id')
+				->addTableColumn('dept', '部门')
 //              ->addTableColumn('vip', 'VIP')
 //              ->addTableColumn('score', '积分')
 //              ->addTableColumn('money', '余额')
@@ -96,6 +99,7 @@ class UserController extends AdminController{
                     ->setPostUrl(U('add')) //设置表单提交地址
 //                  ->addFormItem('reg_type', 'hidden', '注册方式', '注册方式')
 //                  ->addFormItem('usertype', 'radio', '用户类型', '用户类型', $user_object->user_type())
+					->addFormItem('dept', 'select', '部门', '所属部门',$user_object->user_dept())
                     ->addFormItem('username', 'text', '用户名', '用户名')
                     ->addFormItem('email', 'text', '邮箱', '邮箱')
 					->addFormItem('mobile', 'text', '手机号码', '手机号码')               
@@ -111,6 +115,7 @@ class UserController extends AdminController{
                     ->setPostUrl(U('add')) //设置表单提交地址
 //                  ->addFormItem('reg_type', 'hidden', '注册方式', '注册方式')
                     ->addFormItem('companyid', 'select', '所属公司', '所属公司',$user_object->user_company())
+                    ->addFormItem('dept', 'select', '部门', '所属部门',$user_object->user_dept())
                     ->addFormItem('username', 'text', '用户名', '用户名')
                     ->addFormItem('email', 'text', '邮箱', '邮箱')
 					->addFormItem('mobile', 'text', '手机号码', '手机号码')                
@@ -165,6 +170,7 @@ class UserController extends AdminController{
                     ->addFormItem('id', 'hidden', 'ID', 'ID')
 //                  ->addFormItem('usertype', 'radio', '用户类型', '用户类型', $user_object->user_type())
 //                  ->addFormItem('group', 'select', '部门', '所属部门', select_list_as_tree('UserGroup', null, '默认部门'))
+                    ->addFormItem('dept', 'select', '部门', '所属部门',$user_object->user_dept())
                     ->addFormItem('username', 'text', '用户名', '用户名')
                     ->addFormItem('email', 'text', '邮箱', '邮箱')
                     ->addFormItem('mobile', 'text', '手机号码', '手机号码')
@@ -180,8 +186,9 @@ class UserController extends AdminController{
                     ->setPostUrl(U('edit')) //设置表单提交地址
                     ->addFormItem('id', 'hidden', 'ID', 'ID')
 //                  ->addFormItem('usertype', 'radio', '用户类型', '用户类型', $user_object->user_type())
-//                  ->addFormItem('group', 'select', '部门', '所属部门', select_list_as_tree('UserGroup', null, '默认部门'))
+//                  ->addFormItem('group', 'select', '部门', '所属部门', select_list_as_tree('UserGroup', null, '默认部门')) 
                     ->addFormItem('companyid', 'select', '所属公司', '所属公司',$user_object->user_company())
+					->addFormItem('dept', 'select', '部门', '所属部门',$user_object->user_dept())
                     ->addFormItem('username', 'text', '用户名', '用户名')
                     ->addFormItem('email', 'text', '邮箱', '邮箱')
                     ->addFormItem('mobile', 'text', '手机号码', '手机号码')

@@ -117,7 +117,25 @@ class UserModel extends Model{
 			}
         return $id ? $companyinfo[$val[id]] : $companyinfo;
     }
-
+/**
+     * 用户所属部门
+     */
+    public function user_dept($dept1){
+    	$user = session('user_auth');
+        if (empty($user)) {
+           $uid=0;
+        }else{
+            $uid= session('user_auth_sign') == $this->dataAuthSign($user) ? $user['uid'] : 0;
+        }
+    	$id=D('User')->where("id='$uid'")->getField('companyid');
+        $company_object=M('Company')->find($id);
+		$deptinfo=explode(',', $company_object['dept']);
+			foreach($deptinfo as $val){
+//				$companyinfo['id']=$val['id'];
+				$dept[$val]=$val;
+			}
+        return $dept1 ? $dept[$val] : $dept;
+    }
     /**
      * 用户类型
      * @author jry <598821125@qq.com>

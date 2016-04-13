@@ -68,6 +68,7 @@ class CompanyController extends AdminController{
             $builder->setMetaTitle('新增用户') //设置页面标题
                     ->setPostUrl(U('add')) //设置表单提交地址
                     ->addFormItem('name', 'text', '公司名称', '公司名称')
+					->addFormItem('dept', 'tags', '部门', '可以输入多个')
                     ->addFormItem('address', 'text', '地址', '公司地址')
                     ->addFormItem('tel', 'text', '联系电话', '联系电话')
                     ->display();
@@ -97,6 +98,7 @@ class CompanyController extends AdminController{
                     ->setPostUrl(U('edit')) //设置表单提交地址
                     ->addFormItem('id', 'hidden', 'ID', 'ID')
                     ->addFormItem('name', 'text', '公司名称', '公司名称')
+					->addFormItem('dept', 'tags', '部门', '可以输入多个')
                     ->addFormItem('address', 'text', '公司地址', '公司地址')
                     ->addFormItem('tel', 'text', '公司电话', '公司电话')
                     ->setFormData($info)

@@ -26,6 +26,7 @@ class AttendanceRuleController extends AdminController{
 //              ->addTopButton('forbid')  //添加禁用按钮
                 ->addTopButton('delete')  //添加删除按钮
                 ->addTableColumn('id', 'ID')
+				->addTableColumn('dept', '部门')
                 ->addTableColumn('firsttime', '上班时间')
                 ->addTableColumn('secondtime', '下班时间')
                 ->addTableColumn('deductmoney', '迟到早退一次扣的钱数(元)')
@@ -52,6 +53,7 @@ class AttendanceRuleController extends AdminController{
 //              ->addTopButton('delete')  //添加删除按钮
                 ->addTableColumn('id', 'ID')
 				->addTableColumn('company', '公司名称')
+				->addTableColumn('dept', '部门')
                 ->addTableColumn('firsttime', '上班时间')
                 ->addTableColumn('secondtime', '下班时间')
                 ->addTableColumn('deductmoney', '迟到早退一次扣的钱数(元)')
@@ -94,7 +96,8 @@ class AttendanceRuleController extends AdminController{
 			//使用FormBuilder快速建立表单页面。
             $builder = new \Common\Builder\FormBuilder();
             $builder->setMetaTitle('新增考勤规则') //设置页面标题
-                    ->setPostUrl(U('add')) //设置表单提交地址       
+                    ->setPostUrl(U('add')) //设置表单提交地址  
+                    ->addFormItem('dept', 'select', '部门', '默认全部',D('User')->user_dept())     
                     ->addFormItem('firsttime', 'text', '上班时间', '早上9点：9')
 					->addFormItem('secondtime', 'text', '下班时间', '下午6点：18')               
                     ->addFormItem('deductmoney', 'text', '扣钱', '迟到早退一次扣的钱数(元)')
@@ -127,6 +130,7 @@ class AttendanceRuleController extends AdminController{
             $builder->setMetaTitle('编辑用户') //设置页面标题
                     ->setPostUrl(U('edit')) //设置表单提交地址
                     ->addFormItem('id', 'hidden', 'ID', 'ID')
+					->addFormItem('dept', 'select', '部门', '默认全部',D('User')->user_dept())
                    ->addFormItem('firsttime', 'text', '上班时间', '早上9点：9')
 					->addFormItem('secondtime', 'text', '下班时间', '下午6点：18')               
                     ->addFormItem('deductmoney', 'text', '扣钱', '迟到早退一次扣的钱数(元)')
