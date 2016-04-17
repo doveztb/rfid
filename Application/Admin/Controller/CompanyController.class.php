@@ -105,4 +105,84 @@ class CompanyController extends AdminController{
                     ->display();
         }
     }
+
+
+	 public function index1(){
+    	$uid=is_login();
+		$group=D('User')->where("id='$uid'")->getField('group');
+		if($group =='3'){
+		$companyid=D('User')->where("id='$uid'")->getField('companyid');
+		//计算统计图日期
+        $beginThismonth=mktime(0,0,0,date('m'),1,date('Y'));
+//		$endThismonth=mktime(23,59,59,date('m'),date('t'),date('Y'));
+        $today = strtotime(date('Y-m-d', time())); //今天
+        $start_date = $beginThismonth;
+        $end_date   = $today+86400;
+        $count_day  = ($end_date-$start_date)/86400; //查询最近n天
+        $user_object = D('AttendanceRecord');
+        for($i = 0; $i < $count_day; $i++){
+            $day = $start_date + $i*86400; //第n天日期
+            $day_after = $start_date + ($i+1)*86400; //第n+1天日期
+            $map['ctime'] = array(
+                array('egt', $day),
+                array('lt', $day_after)
+            );
+			$map['islate']=1;	//迟到
+			$map['companyid']=$companyid;	//公司
+			$map1['ctime'] = array(
+                array('egt', $day),
+                array('lt', $day_after)
+            );
+			$map1['isearly']=1;	//早退
+			$map1['companyid']=$companyid;	//公司
+            $user_reg_date[] = date('m月d日', $day);
+            $islatecount[] = (int)$user_object->where($map)->count();	//迟到
+			$isearly[] = (int)$user_object->where($map1)->count();	//早退
+        }
+        $this->assign('user_reg_date',json_encode($user_reg_date));
+        $this->assign('islatecount', json_encode($islatecount));
+		$this->assign('isearly',json_encode($isearly));
+        $this->assign('meta_title', "当月考勤");
+		$this->assign('group',$group);
+        $this->display('');
+		}else{
+		$companyid=I('companyid');
+		$company_object=M('Company')->select();
+		//计算统计图日期
+        $beginThismonth=mktime(0,0,0,date('m'),1,date('Y'));
+//		$endThismonth=mktime(23,59,59,date('m'),date('t'),date('Y'));
+        $today = strtotime(date('Y-m-d', time())); //今天
+        $start_date = $beginThismonth;
+        $end_date   = $today+86400;
+        $count_day  = ($end_date-$start_date)/86400; //查询最近n天
+        $user_object = D('AttendanceRecord');
+        for($i = 0; $i < $count_day; $i++){
+            $day = $start_date + $i*86400; //第n天日期
+            $day_after = $start_date + ($i+1)*86400; //第n+1天日期
+            $map['ctime'] = array(
+                array('egt', $day),
+                array('lt', $day_after)
+            );
+			$map['islate']=1;	//迟到
+			$map['companyid']=$companyid;	//公司
+			$map1['ctime'] = array(
+                array('egt', $day),
+                array('lt', $day_after)
+            );
+			$map1['isearly']=1;	//早退
+			$map1['companyid']=$companyid;	//公司
+            $user_reg_date[] = date('m月d日', $day);
+            $islatecount[] = (int)$user_object->where($map)->count();	//迟到
+			$isearly[] = (int)$user_object->where($map1)->count();	//早退
+        }
+        $this->assign('user_reg_date',json_encode($user_reg_date));
+        $this->assign('islatecount', json_encode($islatecount));
+		$this->assign('isearly',json_encode($isearly));
+        $this->assign('meta_title', "当月考勤");
+		$this->assign('group',$group);
+		$this->assign('company_object',$company_object);
+        $this->display('');
+		}
+
+    }
 }
