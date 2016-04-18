@@ -1,0 +1,76 @@
+<extend name="_Layout/main"/>
+<block name="libs">
+    <script src="http://cdn.hcharts.cn/jquery/jquery-1.8.3.min.js"></script>
+</block>
+<block name="breadcrumb">
+    <div class="container">
+        <ul class="breadcrumb ">
+            <li><i class="icon-location-arrow"></i></li>
+            <li><a href="__ROOT__/">首页</a></li>
+            <li><a href="{:U('')}">考勤记录</a></li>
+        </ul>
+    </div>
+</block>
+
+<block name="main">
+ <script src="http://cdn.hcharts.cn/highcharts/highcharts.js"></script>
+<script src="http://cdn.hcharts.cn/highcharts/modules/exporting.js"></script>
+  <div class="container builder builder-list-box">
+        <div class="row">
+            <div class="col-xs-12 col-md-3">
+                <include file="User/side" /><!-- 包含用户中心侧边导航 -->
+            </div>
+            <div class="col-xs-12 col-md-9">
+                <div class="box"                 
+                    <div class="tab-content">
+                        <div class="builder-table">
+                            <div class="panel panel-default">
+                               <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</block>
+<block name="script">
+   		<script type="text/javascript">
+$(function () {
+    $('#container').highcharts({
+        chart: {
+            type: 'line'
+        },
+        title: {
+            text: '个人打卡时间'
+        },
+        subtitle: {
+            text: '个人每天打卡时间'
+        },
+        xAxis: {
+            categories: <?php echo $user_reg_date;?>
+        },
+        yAxis: {
+            title: {
+                text: '打卡时间'
+            }
+        },
+        plotOptions: {
+            line: {
+                dataLabels: {
+                    enabled: true
+                },
+                enableMouseTracking: false
+            }
+        },
+        series: [{
+            name: '下班打卡时间',
+            data: <?php echo $islatecount;?>
+        }, {
+            name: '上前打卡时间',
+            data: <?php echo $isearly;?>
+        }]
+    });
+});
+		</script>
+</block>
