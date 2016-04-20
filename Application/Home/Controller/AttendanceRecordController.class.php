@@ -223,5 +223,35 @@ class AttendanceRecordController extends HomeController{
         $this->assign('meta_title', "个人考勤");
         $this->display('');		
     }
+
+
+
+
+//<script type="text/javascript">
+// setTimeout("document.getElementById('p1').value='2'",1000);
+// self.setInterval('window.document.location.href="http://10.0.0.30/rfid/index.php?s=home/attendance_record/test"',10000);
+//</script>
+
+
+     /**
+     * ce shi 
+     */
+    public function test(){
+            $user_object = M('Test');
+            $data['name']="dqadewq";
+            $id = $user_object->add($data);
+            if($id){
+                    $this->success('新增成功','http://www.yii.com/index.php?r=site%2Fabout');
+                }else{
+                    $this->error('新增失败');
+                
+        }
+    }
+
+
+
+
+
+
 	
 }
