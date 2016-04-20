@@ -40,11 +40,11 @@
                         <span class="icon-bar"></span>
                     </button>
                     <php>if(C('WEB_SITE_LOGO')):</php>
-                        <a class="navbar-brand" target="_blank" href="__ROOT__/">
+                        <a class="navbar-brand"  href="{:U('Admin/Index/index')}">
                             <img class="logo" src="{$Think.config.WEB_SITE_LOGO|get_cover}">
                         </a>
                     <php>else:</php>
-                        <a class="navbar-brand" target="_blank" href="__ROOT__/">
+                        <a class="navbar-brand"  href="{:U('Admin/Index/index')}">
                             <img class="logo" src="__HOME_IMG__/logo/logo_with_title.png">
                         </a>
                     <php>endif;</php>
