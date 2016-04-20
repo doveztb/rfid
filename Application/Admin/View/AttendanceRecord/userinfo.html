@@ -34,7 +34,17 @@ $(function () {
         },
         yAxis: {
             title: {
-                text: 'Temperature (°C)'
+                text: 'shijian'
+            },
+            // labels: {
+            //     formatter:function(){
+            //         return  Highcharts.dateFormat('%Y-%m-%d %H:%M:%S',this.value);
+            //         }
+            // }
+            tooltip:{
+                formatter:function(){
+                return Highcharts.dateFormat('%Y-%m-%d %H:%M:%S',this.y);
+                }
             }
         },
         plotOptions: {
