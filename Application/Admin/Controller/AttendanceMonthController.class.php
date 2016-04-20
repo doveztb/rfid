@@ -6,7 +6,6 @@ use Think\Controller;
  */
 class AttendanceMonthController extends AdminController{
     /**
-     * 用户列表
      */
     public function index(){
         //搜索
@@ -17,15 +16,15 @@ class AttendanceMonthController extends AdminController{
         //获取所有用户
         $map['status'] = array('egt', '0'); //禁用和正常状态
         $data_list = D('AttendanceMonth')->page(!empty($_GET["p"])?$_GET["p"]:1, C('ADMIN_PAGE_ROWS'))->where($map)->order('id desc')->select();
-        $page = new \Common\Util\Page(D('User')->where($map)->count(), C('ADMIN_PAGE_ROWS'));
+        $page = new \Common\Util\Page(D('AttendanceMonth')->where($map)->count(), C('ADMIN_PAGE_ROWS'));
 
         //使用Builder快速建立列表页面。
         $builder = new \Common\Builder\ListBuilder();
-        $builder->setMetaTitle('用户列表') //设置页面标题
-                ->addTopButton('addnew')  //添加新增按钮
-                ->addTopButton('resume')  //添加启用按钮
-                ->addTopButton('forbid')  //添加禁用按钮
-                ->addTopButton('delete')  //添加删除按钮
+        $builder->setMetaTitle('考勤报表') //设置页面标题
+                ->addTopButton('self',array('title'=>'导出excel','href'=>''))  //添加新增按钮
+//              ->addTopButton('resume')  //添加启用按钮
+//              ->addTopButton('forbid')  //添加禁用按钮
+//              ->addTopButton('delete')  //添加删除按钮
                 ->setSearch('请输入ID/用户名/邮箱/手机号', U('index'))
                 ->addTableColumn('id', 'UID')
                 ->addTableColumn('usertype', '类型')
