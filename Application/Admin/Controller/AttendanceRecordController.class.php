@@ -103,14 +103,14 @@ class AttendanceRecordController extends AdminController{
  			$last_month = 12;
 			$year = $year - 1;
 		}
-        $beginThismonth=mktime(0, 0, 0, $last_month, 0, $year);
+        $beginThismonth=mktime(23, 59, 59, $last_month, 0, $year);
 //		$endThismonth=mktime(23,59,59,date('m'),date('t'),date('Y'));
         $today = mktime(0, 0, 0, $month, 0, $year); 
         $start_date = $beginThismonth;
         $end_date   = $today+86400;
         $count_day  = ($end_date-$start_date)/86400; //查询最近n天
         $user_object = D('AttendanceRecord');
-        for($i = 0; $i < $count_day; $i++){
+        for($i = 1; $i < $count_day; $i++){
             $day = $start_date + $i*86400; //第n天日期
             $day_after = $start_date + ($i+1)*86400; //第n+1天日期
             $map['ctime'] = array(
@@ -153,7 +153,7 @@ class AttendanceRecordController extends AdminController{
         $end_date   = $today+86400;
         $count_day  = ($end_date-$start_date)/86400; //查询最近n天
         $user_object = D('AttendanceRecord');
-        for($i = 0; $i < $count_day; $i++){
+        for($i = 1; $i < $count_day; $i++){
             $day = $start_date + $i*86400; //第n天日期
             $day_after = $start_date + ($i+1)*86400; //第n+1天日期
             $map['ctime'] = array(
