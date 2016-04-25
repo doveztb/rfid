@@ -20,6 +20,6 @@ class IndexController extends HomeController{
     public function index(){
         Cookie('__forward__', $_SERVER['REQUEST_URI']);
         $this->assign('meta_title', "首页");
-        $this->display('User/index');
+        $this->redirect('Home/Document/index/cid/1');
     }
 }

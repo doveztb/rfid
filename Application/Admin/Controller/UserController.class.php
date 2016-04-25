@@ -1,11 +1,4 @@
 <?php
-// +----------------------------------------------------------------------
-// | CoreThink [ Simple Efficient Excellent ]
-// +----------------------------------------------------------------------
-// | Copyright (c) 2014 http://www.corethink.cn All rights reserved.
-// +----------------------------------------------------------------------
-// | Author: jry <598821125@qq.com> <http://www.corethink.cn>
-// +----------------------------------------------------------------------
 namespace Admin\Controller;
 use Think\Controller;
 /**
@@ -21,7 +14,7 @@ class UserController extends AdminController{
         //搜索
         $keyword = I('keyword', '', 'string');
         $condition = array('like','%'.$keyword.'%');
-        $map['id|username|email|mobile'] = array($condition, $condition, $condition, $condition,'_multi'=>true);
+        $map['id|username|rfid|mobile'] = array($condition, $condition, $condition, $condition,'_multi'=>true);
 		$uid=is_login();
 		$groupid=D('User')->where("id='$uid'")->getField('group');
 		if($groupid == '3'){	//获取属于同一公司的员工
@@ -32,28 +25,30 @@ class UserController extends AdminController{
         $map['status'] = array('egt', '0'); //禁用和正常状态
         $data_list = D('User')->page(!empty($_GET["p"])?$_GET["p"]:1, C('ADMIN_PAGE_ROWS'))->where($map)->order('sort desc,id desc')->select();
         $page = new \Common\Util\Page(D('User')->where($map)->count(), C('ADMIN_PAGE_ROWS'));
-
+		foreach($data_list as $key=>$value){
+			$data_list[$key]['companyid']=M('Company')->where("id= '$value[companyid]'")->getField('name');
+		}
         //使用Builder快速建立列表页面。
         $builder = new \Common\Builder\ListBuilder();
         $builder->setMetaTitle('用户列表') //设置页面标题
-                ->addTopButton('addnew')  //添加新增按钮
+//              ->addTopButton('addnew')  //添加新增按钮
                 ->addTopButton('resume')  //添加启用按钮
                 ->addTopButton('forbid')  //添加禁用按钮
                 ->addTopButton('delete')  //添加删除按钮
-                ->setSearch('请输入ID/用户名/邮箱/手机号', U('index'))
+                ->setSearch('请输入ID/用户名/卡号/手机号', U('index'))
                 ->addTableColumn('id', 'UID')
 //              ->addTableColumn('usertype', '类型')
                 ->addTableColumn('username', '用户名')
+				->addTableColumn('rfid', '卡号')
                 ->addTableColumn('email', '邮箱')
                 ->addTableColumn('mobile', '手机号')
-				->addTableColumn('companyid', '公司id')
+				->addTableColumn('companyid', '公司')
 				->addTableColumn('dept', '部门')
 //              ->addTableColumn('vip', 'VIP')
 //              ->addTableColumn('score', '积分')
 //              ->addTableColumn('money', '余额')
                 ->addTableColumn('last_login_time', '最后登录时间时间', 'time')
 //              ->addTableColumn('reg_type', '注册方式')
-                ->addTableColumn('sort', '排序', 'text')
                 ->addTableColumn('status', '状态', 'status')
                 ->addTableColumn('right_button', '操作', 'btn')
                 ->setTableDataList($data_list) //数据列表
@@ -71,13 +66,15 @@ class UserController extends AdminController{
     public function add(){
         if(IS_POST){
             $user_object = D('User');
-            $data = $user_object->create();
+            $data = $_POST;
 			$uid=is_login();
 			$groupid=D('User')->where("id='$uid'")->getField('group');
 			if($groupid == '3'){	//获取属于同一公司的员工
 			$companyid=D('User')->where("id='$uid'")->getField('companyid');
 			$data['companyid']=$companyid;
 			}
+			$data['status']=1;
+			$data['password']=user_md5($_POST['password']);
             if($data){
                 $id = $user_object->add($data);
                 if($id){
