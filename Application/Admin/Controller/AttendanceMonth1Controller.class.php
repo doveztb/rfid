@@ -37,7 +37,7 @@ class AttendanceMonth1Controller extends AdminController{
         //使用Builder快速建立列表页面。
         $builder = new \Common\Builder\ListBuilder();
         $builder->setMetaTitle('考勤报表') //设置页面标题
-                ->addTopButton('self',array('title'=>'导出excel','href'=>''))  //添加新增按钮
+                ->addTopButton('self',array('title'=>'导出csv','href'=>U('out_csv')))  //添加新增按钮
 //              ->addTopButton('resume')  //添加启用按钮
 //              ->addTopButton('forbid')  //添加禁用按钮
 //              ->addTopButton('delete')  //添加删除按钮
@@ -70,7 +70,7 @@ class AttendanceMonth1Controller extends AdminController{
         $today = strtotime(date('Y-m-d', time())); //今天
         $start_date = $beginThismonth;
         $end_date   = $today+86400;
-		$map['createtime'] = array(
+		$map1['createtime'] = array(
                 array('egt', $start_date),
                 array('lt', $end_date)
             );
@@ -89,7 +89,7 @@ class AttendanceMonth1Controller extends AdminController{
         //使用Builder快速建立列表页面。
         $builder = new \Common\Builder\ListBuilder();
         $builder->setMetaTitle('考勤报表') //设置页面标题
-                ->addTopButton('self',array('title'=>'导出excel','href'=>''))  //添加新增按钮
+                ->addTopButton('self',array('title'=>'导出csv','href'=>U('out_csv')))  //添加新增按钮
 //              ->addTopButton('resume')  //添加启用按钮
 //              ->addTopButton('forbid')  //添加禁用按钮
 //              ->addTopButton('delete')  //添加删除按钮
@@ -141,7 +141,71 @@ class AttendanceMonth1Controller extends AdminController{
         }
     }
 
- 
+ 	public function out_csv(){
+    	$uid=is_login();
+		$group=D('User')->where("id='$uid'")->getField('group');
+		if($group == 3){
+			 $keyword = I('keyword', '', 'string');
+        $condition = array('like','%'.$keyword.'%');
+        $map['uid'] = $condition;
+		$companyid=D('User')->where("id='$uid'")->getField('companyid');
+		$map['companyid']=$companyid;
+		//当月时间
+		 $beginThismonth=mktime(0,0,0,date('m'),1,date('Y'));
+//		$endThismonth=mktime(23,59,59,date('m'),date('t'),date('Y'));
+        $today = strtotime(date('Y-m-d', time())); //今天
+        $start_date = $beginThismonth;
+        $end_date   = $today+86400;
+		$map['createtime'] = array(
+                array('egt', $start_date),
+                array('lt', $end_date)
+            );
+        //获取所有用户
+        $map['status'] = array('egt', '0'); //禁用和正常状态
+        $data_list = D('AttendanceMonth')->page(!empty($_GET["p"])?$_GET["p"]:1, C('ADMIN_PAGE_ROWS'))->where($map)->order('id asc')->select();
+        foreach($data_list as $key=>$value){
+        	$data[$key]['id']=$value['id'];
+			$data[$key]['username']=M('User')->where("id= '$value[uid]'")->getField('username');
+			$data[$key]['latetimes']=$value['latetimes'];
+			$data[$key]['earlytimes']=$value['earlytimes'];
+			$data[$key]['deductmoney']=$value['deductmoney'];
+			$data[$key]['leavedays']=$value['leavedays'];
+		}
+//		var_dump($data);die();
+		$csv=new \Think\Csv();
+        $csv_title=array('编号','姓名','迟到次数','早退次数','罚款','请假天数');
+        $csv->put_csv($data,$csv_title);
+		}else{
+			$beginThismonth=mktime(0,0,0,date('m'),1,date('Y'));
+//		$endThismonth=mktime(23,59,59,date('m'),date('t'),date('Y'));
+        $today = strtotime(date('Y-m-d', time())); //今天
+        $start_date = $beginThismonth;
+        $end_date   = $today+86400;
+		$map1['createtime'] = array(
+                array('egt', $start_date),
+                array('lt', $end_date)
+            );
+        //获取所有用户
+        $map['status'] = array('egt', '0'); //禁用和正常状态
+        $data_list = M('Company')->page(!empty($_GET["p"])?$_GET["p"]:1, C('ADMIN_PAGE_ROWS'))->where($map)->order('id desc')->select();
+		foreach($data_list as $key=>$val){
+			$map1['companyid']=$val['id'];
+			$data[$key]['name']=$val['name'];
+			$data[$key]['usercount']=D('User')->where("companyid='$val[id]'")->count();
+			$data[$key]['latetimes']=D('AttendanceMonth')->where($map1)->sum('latetimes');
+			$data[$key]['earlytimes']=D('AttendanceMonth')->where($map1)->sum('earlytimes');
+			$data[$key]['latetimes_user']=$data_list[$key]['latetimes']/$data_list[$key]['usercount'];
+			$data[$key]['earlytimes_user']=$data_list[$key]['earlytimes']/$data_list[$key]['usercount'];
+		}
+		
+		$csv=new \Think\Csv();
+        $csv_title=array('公司名称','公司人数','迟到总次数','早退总次数','人均迟到次数','人均早退次数');
+        $csv->put_csv($data,$csv_title);						
+		}
+       
+    }
+	
+	
 
 
 }
