@@ -4,7 +4,7 @@ use Think\Controller;
 /**
  * 考勤月记录
  */
-class AttendanceMonthController extends AdminController{
+class AttendanceMonth1Controller extends AdminController{
     /**
      */
     public function index(){
@@ -16,19 +16,15 @@ class AttendanceMonthController extends AdminController{
         $map['uid'] = $condition;
 		$companyid=D('User')->where("id='$uid'")->getField('companyid');
 		$map['companyid']=$companyid;
-		//上月时间
-		$month = date('m');
-		$year = date('Y');
-		$last_month = date('m') - 1;
-		if($month == 1){
- 			$last_month = 12;
-			$year = $year - 1;
-		}
-        $beginThismonth=mktime(0, 0, 0, $last_month, 0, $year);
-        $today = mktime(0, 0, 0, $month, 0, $year); 
+		//当月时间
+		 $beginThismonth=mktime(0,0,0,date('m'),1,date('Y'));
+//		$endThismonth=mktime(23,59,59,date('m'),date('t'),date('Y'));
+        $today = strtotime(date('Y-m-d', time())); //今天
+        $start_date = $beginThismonth;
+        $end_date   = $today+86400;
 		$map['createtime'] = array(
-                array('egt', $beginThismonth),
-                array('lt', $today)
+                array('egt', $start_date),
+                array('lt', $end_date)
             );
         //获取所有用户
         $map['status'] = array('egt', '0'); //禁用和正常状态
@@ -53,7 +49,7 @@ class AttendanceMonthController extends AdminController{
                 ->addTableColumn('earlytimes', '早退次数')
                 ->addTableColumn('deductmoney', '罚款')
                 ->addTableColumn('leavedays', '请假天数')
-                ->addTableColumn('createtime', '月份', 'time')
+                ->addTableColumn('createtime', '月份', 'date')
                 ->addTableColumn('status', '状态', 'status')
                 ->addTableColumn('right_button', '操作', 'btn')
                 ->setTableDataList($data_list) //数据列表
@@ -69,18 +65,14 @@ class AttendanceMonthController extends AdminController{
         $condition = array('like','%'.$keyword.'%');
         $map['id'] = $condition;
 		//上月时间
-		$month = date('m');
-		$year = date('Y');
-		$last_month = date('m') - 1;
-		if($month == 1){
- 			$last_month = 12;
-			$year = $year - 1;
-		}
-        $beginThismonth=mktime(0, 0, 0, $last_month, 0, $year);
-        $today = mktime(0, 0, 0, $month, 0, $year); 
-		$map1['createtime'] = array(
-                array('egt', $beginThismonth),
-                array('lt', $today)
+		$beginThismonth=mktime(0,0,0,date('m'),1,date('Y'));
+//		$endThismonth=mktime(23,59,59,date('m'),date('t'),date('Y'));
+        $today = strtotime(date('Y-m-d', time())); //今天
+        $start_date = $beginThismonth;
+        $end_date   = $today+86400;
+		$map['createtime'] = array(
+                array('egt', $start_date),
+                array('lt', $end_date)
             );
         //获取所有用户
         $map['status'] = array('egt', '0'); //禁用和正常状态
