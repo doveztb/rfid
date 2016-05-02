@@ -57,4 +57,11 @@ class IndexController extends AdminController{
             $this->error("缓存清理失败");
         }
     }
+	
+	
+	
+	
+	
+	
+	
 }
