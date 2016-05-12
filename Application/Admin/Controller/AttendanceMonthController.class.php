@@ -59,8 +59,8 @@ class AttendanceMonthController extends AdminController{
                 ->setTableDataList($data_list) //数据列表
                 ->setTableDataPage($page->show()) //数据列表分页
                 ->addRightButton('edit')   //添加编辑按钮
-                ->addRightButton('forbid') //添加禁用/启用按钮
-                ->addRightButton('delete') //添加删除按钮
+//              ->addRightButton('forbid') //添加禁用/启用按钮
+//              ->addRightButton('delete') //添加删除按钮
                 ->display();
 			
 		}else{
@@ -121,15 +121,20 @@ class AttendanceMonthController extends AdminController{
   
     public function edit($id){
         //获取用户信息
-        $info = D('AttendanceMonth')->find($id);
+//      $info = D('AttendanceMonth')->find($id);
 
         if(IS_POST){
             $user_object = D('AttendanceMonth');
             //不修改密码时销毁变量
-            if($user_object->save($_POST)){
-                $this->success('更新成功', U('index'));
+            $data = $user_object->create();
+            if($data){
+                if($user_object->save()!== false){
+                    $this->success('更新成功', U('index'));
+                }else{
+                    $this->error('更新失败');
+                }
             }else{
-                $this->error('更新失败', $user_object->getError());
+                $this->error($user_object->getError());
             }
         }else{
             $user_object = D('AttendanceMonth');
@@ -140,10 +145,10 @@ class AttendanceMonthController extends AdminController{
                     ->setPostUrl(U('edit')) //设置表单提交地址
                     ->addFormItem('id', 'hidden', 'ID', 'ID')
                     ->addFormItem('uid', 'text', '用户id', '用户id')
-                    ->addFormItem('latetimes', 'num', '迟到次数', '迟到次数')
-                    ->addFormItem('earlytimes', 'num', '早退次数', '早退次数')
-                    ->addFormItem('deductmoney', 'num', '罚款', '元')
-                    ->addFormItem('leavedays', 'text', '请假天数', '请假天数')
+                    ->addFormItem('latetimes', 'num', '迟到次数', '不能超过30次')
+                    ->addFormItem('earlytimes', 'num', '早退次数', '不能超过30次')
+                    ->addFormItem('deductmoney', 'num', '罚款', '不能超过300元')
+                    ->addFormItem('leavedays', 'num', '请假天数', '不能超过30天')
                     ->setFormData($info)
                     ->display();
         }

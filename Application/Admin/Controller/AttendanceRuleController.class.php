@@ -24,7 +24,7 @@ class AttendanceRuleController extends AdminController{
                 ->addTopButton('addnew')  //添加新增按钮
 //              ->addTopButton('resume')  //添加启用按钮
 //              ->addTopButton('forbid')  //添加禁用按钮
-                ->addTopButton('delete')  //添加删除按钮
+//              ->addTopButton('delete')  //添加删除按钮
                 ->addTableColumn('id', 'ID')
 				->addTableColumn('dept', '部门')
                 ->addTableColumn('firsttime', '上班时间')
@@ -34,7 +34,7 @@ class AttendanceRuleController extends AdminController{
                 ->setTableDataList($data_list) //数据列表
                 ->setTableDataPage($page->show()) //数据列表分页
                 ->addRightButton('edit')   //添加编辑按钮
-                ->addRightButton('delete') //添加删除按钮
+                 ->addRightButton('delete',array('href'=>U('/admin/attendance_rule/delete/id/__data_id__/'))) //添加删除按钮
                 ->display();
 		}else{
 		$map['status'] = array('egt', '0'); //禁用和正常状态
@@ -73,7 +73,7 @@ class AttendanceRuleController extends AdminController{
     public function add(){
         if(IS_POST){
             $user_object = D('AttendanceRule');
-            $data = $user_object->create();
+			$data=$_POST;
 			$data['status']=1;
 			$uid=is_login();
 			$groupid=D('User')->where("id='$uid'")->getField('group');
@@ -81,7 +81,14 @@ class AttendanceRuleController extends AdminController{
 				$companyid=D('User')->where("id='$uid'")->getField('companyid');
 			}
 			$data['companyid']=$companyid;
-            if($data){
+			$data = $user_object->create($data);
+			$map['companyid']=$companyid;
+			$map['dept']=$data['dept'];
+			$isdept=$user_object->where($map)->find();
+			if($isdept){
+				$this->error('该部门已有考勤规则，请不要重复添加！');
+			}else{
+				if($data){
                 $id = $user_object->add($data);
                 if($id){
                     $this->success('新增成功', U('index'));
@@ -91,6 +98,8 @@ class AttendanceRuleController extends AdminController{
             }else{
                 $this->error($user_object->getError());
             }
+			}
+            
         }else{
             $user_object = D('AttendanceRule');
 			//使用FormBuilder快速建立表单页面。
@@ -140,4 +149,19 @@ class AttendanceRuleController extends AdminController{
             
         }
     }
+
+
+
+	/*
+	 *删除用户 
+	 */
+	public function delete(){
+		$map['id']=$_GET['id'];
+		 $result = D('AttendanceRule')->where($map)->delete();
+		    if($result){
+		        $this->success('删除成功，不可恢复！');
+		    }else{
+		        $this->error('删除失败');
+		    }
+	}
 }
