@@ -13,7 +13,7 @@
 return array(
     //数据库配置
     'DB_TYPE'   => $_SERVER[ENV_PRE.'DB_TYPE'] ? : 'mysql', //数据库类型
-    'DB_HOST'   => $_SERVER[ENV_PRE.'DB_HOST'] ? : '127.0.0.1', //服务器地址
+    'DB_HOST'   => $_SERVER[ENV_PRE.'DB_HOST'] ? : 'localhost', //服务器地址
     'DB_NAME'   => $_SERVER[ENV_PRE.'DB_NAME'] ? : 'corethink1', //数据库名
     'DB_USER'   => $_SERVER[ENV_PRE.'DB_USER'] ? : 'root', //用户名
     'DB_PWD'    => $_SERVER[ENV_PRE.'DB_PWD']  ? : '123456',  //密码

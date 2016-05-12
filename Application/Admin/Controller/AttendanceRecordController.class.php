@@ -267,7 +267,7 @@ class AttendanceRecordController extends AdminController{
                 ->addTableColumn('id', 'id')
                 ->addTableColumn('uid', '用户id')
 				->addTableColumn('username', '用户姓名')
-                ->addTableColumn('companyid', '公司id')
+                ->addTableColumn('companyid', '公司')
                 ->addTableColumn('firsttime', '早上签到','time')
                 ->addTableColumn('secondtime', '晚上签到','time')
                 ->addTableColumn('islate', '是否迟到')
@@ -298,6 +298,7 @@ class AttendanceRecordController extends AdminController{
 		$map['status'] = array('egt', '0'); //禁用和正常状态
         $data_list = D('AttendanceRecord')->page(!empty($_GET["p"])?$_GET["p"]:1, C('ADMIN_PAGE_ROWS'))->where($map)->order('id desc')->select();
         foreach($data_list as $key=>$value){
+				$data_list[$key]['username']=M('User')->where("id= '$value[uid]'")->getField('username');
 			$data_list[$key]['companyid']=M('Company')->where("id= '$value[companyid]'")->getField('name');
 		}
         $page = new \Common\Util\Page(D('AttendanceRecord')->where($map)->count(), C('ADMIN_PAGE_ROWS'));
@@ -311,7 +312,8 @@ class AttendanceRecordController extends AdminController{
                 ->setSearch('请输入用户id', U(''))
                 ->addTableColumn('id', 'id')
                 ->addTableColumn('uid', '用户id')
-                ->addTableColumn('companyid', '公司id')
+				->addTableColumn('username', '用户姓名')
+                ->addTableColumn('companyid', '公司')
                 ->addTableColumn('firsttime', '早上签到','time')
                 ->addTableColumn('secondtime', '晚上签到','time')
                 ->addTableColumn('islate', '是否迟到')
