@@ -27,6 +27,7 @@ class LeavesController extends AdminController{
                                      ->select();
 		foreach($data_list as $key=>$val){
 			$data_list[$key]['result']=leaves_type($val['result']);
+			$data_list[$key]['username']=D('User')->where("id='$val[uid]'")->getField('username');
 		}						
         $page = new \Common\Util\Page(D('Leaves')->where($map)->count(), C('ADMIN_PAGE_ROWS'));
 
@@ -39,7 +40,8 @@ class LeavesController extends AdminController{
 //              ->addTopButton('delete')  //添加删除按钮
 //              ->setSearch('请输入ID/用户名/邮箱/手机号', U('index'))
                 ->addTableColumn('id', 'ID')
-                ->addTableColumn('uid', '请假人')
+                ->addTableColumn('uid', '用户id')
+				->addTableColumn('username', '用户姓名')
                 ->addTableColumn('title', '事由')
                 ->addTableColumn('timestart', '开始时间', 'time')
                 ->addTableColumn('timeend', '结束时间','time')
@@ -237,6 +239,7 @@ class LeavesController extends AdminController{
        if(isset($data_list)){
 			foreach($data_list as $key=>$val){
 			$data_list[$key][result]=leaves_type($val['result']);
+				$data_list[$key]['username']=D('User')->where("id='$val[uid]'")->getField('username');
 		}
 		}	
         $page = new \Common\Util\Page(D('Leaves')->where($map)->count(), C('ADMIN_PAGE_ROWS'));
@@ -250,7 +253,8 @@ class LeavesController extends AdminController{
 //              ->addTopButton('delete')  //添加删除按钮
 //              ->setSearch('请输入ID/用户名/邮箱/手机号', U('index'))
                 ->addTableColumn('id', 'ID')
-                ->addTableColumn('uid', '请假人')
+                ->addTableColumn('uid', '用户id')
+				->addTableColumn('username', '用户姓名')
                 ->addTableColumn('title', '事由')
                 ->addTableColumn('timestart', '开始时间', 'time')
                 ->addTableColumn('timeend', '结束时间','time')
@@ -285,6 +289,7 @@ public function refuse(){
        if(isset($data_list)){
 			foreach($data_list as $key=>$val){
 			$data_list[$key][result]=leaves_type($val['result']);
+				$data_list[$key]['username']=D('User')->where("id='$val[uid]'")->getField('username');
 		}
 		}	
         $page = new \Common\Util\Page(D('Leaves')->where($map)->count(), C('ADMIN_PAGE_ROWS'));
@@ -298,7 +303,8 @@ public function refuse(){
 //              ->addTopButton('delete')  //添加删除按钮
 //              ->setSearch('请输入ID/用户名/邮箱/手机号', U('index'))
                 ->addTableColumn('id', 'ID')
-                ->addTableColumn('uid', '请假人')
+                ->addTableColumn('uid', '用户id')
+				->addTableColumn('username', '用户姓名')
                 ->addTableColumn('title', '事由')
                 ->addTableColumn('timestart', '开始时间', 'time')
                 ->addTableColumn('timeend', '结束时间','time')
