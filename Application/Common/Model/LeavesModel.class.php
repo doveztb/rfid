@@ -8,7 +8,10 @@ class LeavesModel extends Model{
      * @author jry <598821125@qq.com>
      */
     protected $_validate = array(
-        array('days','require','必须填写', self::MUST_VALIDATE, 'regex', self::MODEL_BOTH),
+    array('title','require','标题不能为空', self::MUST_VALIDATE, 'regex', self::MODEL_BOTH),
+        array('days','require','请假天数必须填写', self::MUST_VALIDATE, 'regex', self::MODEL_BOTH),
+        array('days','/^(?:\d|[12]\d|30)$/','小于30天', self::MUST_VALIDATE, 'regex', self::MODEL_BOTH),
+        
         // array('title', '1,1024', '消息长度为1-32个字符', self::EXISTS_VALIDATE, 'length', self::MODEL_BOTH),
 //      array('to_uid','require','收信人必须填写', self::MUST_VALIDATE, 'regex', self::MODEL_BOTH),
     );

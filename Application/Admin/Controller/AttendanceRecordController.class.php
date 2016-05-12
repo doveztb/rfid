@@ -253,18 +253,20 @@ class AttendanceRecordController extends AdminController{
         $data_list = D('AttendanceRecord')->page(!empty($_GET["p"])?$_GET["p"]:1, C('ADMIN_PAGE_ROWS'))->where($map)->order('id desc')->select();
         foreach($data_list as $key=>$value){
 			$data_list[$key]['companyid']=M('Company')->where("id= '$value[companyid]'")->getField('name');
+			$data_list[$key]['username']=M('User')->where("id= '$value[uid]'")->getField('username');
 		}
         $page = new \Common\Util\Page(D('AttendanceRecord')->where($map)->count(), C('ADMIN_PAGE_ROWS'));
 		  //使用Builder快速建立列表页面。
         $builder = new \Common\Builder\ListBuilder();
-        $builder->setMetaTitle('考勤报表') //设置页面标题
-//              ->addTopButton('self',array('title'=>'导出excel','href'=>''))  //添加新增按钮
+        $builder->setMetaTitle('考勤列表') //设置页面标题
+                ->addTopButton('self',array('title'=>'考勤列表'))  //添加新增按钮
 //              ->addTopButton('edit')  //添加启用按钮
-                ->addTopButton('forbid')  //添加禁用按钮
+//              ->addTopButton('forbid')  //添加禁用按钮
 //              ->addTopButton('delete')  //添加删除按钮
                 ->setSearch('请输入用户id', U(''))
                 ->addTableColumn('id', 'id')
                 ->addTableColumn('uid', '用户id')
+				->addTableColumn('username', '用户姓名')
                 ->addTableColumn('companyid', '公司id')
                 ->addTableColumn('firsttime', '早上签到','time')
                 ->addTableColumn('secondtime', '晚上签到','time')
@@ -276,8 +278,8 @@ class AttendanceRecordController extends AdminController{
                 ->setTableDataList($data_list) //数据列表
                 ->setTableDataPage($page->show()) //数据列表分页
                 ->addRightButton('edit')   //添加编辑按钮
-                ->addRightButton('forbid') //添加禁用/启用按钮
-                ->addRightButton('delete') //添加删除按钮
+//              ->addRightButton('forbid') //添加禁用/启用按钮
+//              ->addRightButton('delete') //添加删除按钮
                 ->display();
                 }else{
                 $keyword = I('keyword', '', 'string');
@@ -301,10 +303,10 @@ class AttendanceRecordController extends AdminController{
         $page = new \Common\Util\Page(D('AttendanceRecord')->where($map)->count(), C('ADMIN_PAGE_ROWS'));
 		  //使用Builder快速建立列表页面。
         $builder = new \Common\Builder\ListBuilder();
-        $builder->setMetaTitle('考勤报表') //设置页面标题
-//              ->addTopButton('self',array('title'=>'导出excel','href'=>''))  //添加新增按钮
+        $builder->setMetaTitle('考勤列表') //设置页面标题
+                ->addTopButton('self',array('title'=>'考勤列表'))  //添加新增按钮
 //              ->addTopButton('resume')  //添加启用按钮
-                ->addTopButton('forbid')  //添加禁用按钮
+//              ->addTopButton('forbid')  //添加禁用按钮
 //              ->addTopButton('delete')  //添加删除按钮
                 ->setSearch('请输入用户id', U(''))
                 ->addTableColumn('id', 'id')
@@ -320,8 +322,8 @@ class AttendanceRecordController extends AdminController{
                 ->setTableDataList($data_list) //数据列表
                 ->setTableDataPage($page->show()) //数据列表分页
                 ->addRightButton('edit')   //添加编辑按钮
-                ->addRightButton('forbid') //添加禁用/启用按钮
-                ->addRightButton('delete') //添加删除按钮
+//              ->addRightButton('forbid') //添加禁用/启用按钮
+//              ->addRightButton('delete') //添加删除按钮
                 ->display();	
            }
 		
@@ -337,6 +339,7 @@ class AttendanceRecordController extends AdminController{
             //不修改密码时销毁变量
             $_POST['firsttime']=strtotime($_POST['firsttime']);
 			$_POST['secondtime']=strtotime($_POST['secondtime']);
+//			$data=$user_object->create($data);
             if($user_object->save($_POST)){
                 $this->success('更新成功', U('userlist'));
             }else{
@@ -353,8 +356,8 @@ class AttendanceRecordController extends AdminController{
                     ->addFormItem('uid', 'text', '用户id', '用户id')
                     ->addFormItem('firsttime', 'time', '上班签到时间', '上班签到时间')
                     ->addFormItem('secondtime', 'time', '下班签到时间', '下班签到')
-                    ->addFormItem('islate', 'num', '是否迟到', '1迟到 0没有')
-                    ->addFormItem('isearly', 'text', '是否 早退', '1早退 0 没有')
+                    ->addFormItem('islate', 'radio', '是否迟到', '选择',array('1'=>'迟到','0'=>'没有'))
+                    ->addFormItem('isearly', 'radio', '是否 早退', '1早退 0 没有',array('1'=>'早退','0'=>'没有'))
                     ->setFormData($info)
                     ->display();
         }

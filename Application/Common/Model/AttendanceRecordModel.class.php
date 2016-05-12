@@ -4,28 +4,28 @@ use Think\Model;
 /**
  * 考勤月记录模型
  */
-class AttendanceRuleModel extends Model{
+class AttendanceRecordModel extends Model{
     /**
      * 自动验证规则
      */
     protected $_validate = array(
         //迟到次数
-        array('dept', 'require', '请选择部门', self::EXISTS_VALIDATE , 'regex', self::MODEL_BOTH),
+        array('islate', 'array(0,1)', '请输入1代表迟到，或者输入0代表没有迟到', self::EXISTS_VALIDATE , 'in', self::MODEL_BOTH),
 //      array('latetimes', 'array(array('gt',1),array('lt',30))','小于20', self::EXISTS_VALIDATE, 'regex', self::MODEL_BOTH),
 //      array('email', '', '邮箱被占用', self::EXISTS_VALIDATE, 'unique', self::MODEL_BOTH),
 
         //上班时间
-        array('firsttime', '/^(?:\d|[12]\d|25)$/', '上班时间请输入小于24', self::EXISTS_VALIDATE , 'regex', self::MODEL_BOTH),
+        array('isearly', 'array(0,1)', '请输入1代表早退，或者输入0代表没有迟到', self::EXISTS_VALIDATE , 'in', self::MODEL_BOTH),
 //      array('mobile', '', '手机号被占用', self::EXISTS_VALIDATE, 'unique', self::MODEL_BOTH),
 
         //下班时间
-        array('secondtime', '/^(?:\d|[12]\d|25)$/', '下班时间请输入小于24', self::EXISTS_VALIDATE , 'regex', self::MODEL_BOTH),
+//      array('secondtime', '/^(?:\d|[12]\d|25)$/', '请输入小于24', self::MUST_VALIDATE, 'regex', self::MODEL_BOTH),
 //      array('password', '6,30', '密码长度为6-30位', self::MUST_VALIDATE, 'length', self::MODEL_INSERT),
 //      array('password', '/(?!^(\d+|[a-zA-Z]+|[~!@#$%^&*()_+{}:"<>?\-=[\];\',.\/]+)$)^[\w~!@#$%^&*()_+{}:"<>?\-=[\];\',.\/]+$/', '密码至少由数字、字符、特殊字符三种中的两种组成', self::MUST_VALIDATE, 'regex', self::MODEL_INSERT),
 //      array('repassword', 'password', '两次输入的密码不一致', self::EXISTS_VALIDATE, 'confirm', self::MODEL_INSERT),
 
         //扣钱
-        array('deductmoney', '/^(?:\d|[12]\d|30)$/', '请输入小于30', self::EXISTS_VALIDATE , 'regex', self::MODEL_BOTH),
+//      array('deductmoney', '/^(?:\d|[12]\d|30)$/', '请输入小于30', self::MUST_VALIDATE, 'regex', self::MODEL_BOTH),
 //      array('username', '3,32', '用户名长度为1-32个字符', self::MUST_VALIDATE, 'length', self::MODEL_BOTH),
 //      array('username', '', '用户名被占用', self::MUST_VALIDATE, 'unique', self::MODEL_BOTH),
 //      array('username', 'checkIP', '注册太频繁请稍后再试', self::MUST_VALIDATE, 'callback', self::MODEL_INSERT), //IP限制

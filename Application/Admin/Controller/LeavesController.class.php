@@ -211,7 +211,7 @@ class LeavesController extends AdminController{
                     ->addFormItem('timestart', 'time', '开始时间', '开始时间')
                     ->addFormItem('timeend', 'time', '结束时间', '结束时间')
 					->addFormItem('days', 'num', '请假天数', '天')
-                    ->addFormItem('result', 'radio', '是否同意', '选择同意或不同意',array('1'=>'同意','2'=>'决绝'))
+                    ->addFormItem('result', 'radio', '是否同意', '选择同意或不同意',array('1'=>'同意','2'=>'拒绝'))
                     ->addFormItem('ext', 'textarea', '备注', '备注')
                     ->setFormData(D('Leaves')->find($id))
                     ->display();

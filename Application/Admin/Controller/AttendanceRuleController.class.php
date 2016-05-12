@@ -122,15 +122,21 @@ class AttendanceRuleController extends AdminController{
      */
     public function edit($id){
         //获取用户信息
-        $info = D('AttendanceRule')->find($id);
+//      $info = D('AttendanceRule')->find($id);
 
         if(IS_POST){
             $user_object = D('AttendanceRule');
-            if($user_object->save($_POST)){
+			$data = $user_object->create($_POST);
+			if($data){
+				 if($user_object->save($data)){
                 $this->success('更新成功', U('index'));
             }else{
                 $this->error('更新失败', $user_object->getError());
             }
+			}else{
+				$this->error($user_object->getError());
+			}
+           
         }else{
             $user_object = D('AttendanceRule');
             $info = $user_object->find($id);
