@@ -217,9 +217,15 @@ class AttendanceRecordController extends HomeController{
             $islatecount[] = (int)$user_object->where($map)->getField('secondtime');	//晚上签到时间
 			$isearly[] = (int)$user_object->where($map1)->getField('firsttime');	//早上签到 时间
         }
+		foreach($islatecount as $val){
+			$is[]=(float)date("H.i",$val);
+		}
+		foreach($isearly as $val1){
+			$is1[]=(float)date("H.i",$val1);
+		}
         $this->assign('user_reg_date',json_encode($user_reg_date));
-        $this->assign('islatecount', json_encode($islatecount));
-		$this->assign('isearly',json_encode($isearly));
+        $this->assign('islatecount', json_encode($is));
+		$this->assign('isearly',json_encode($is1));
         $this->assign('meta_title', "个人考勤");
         $this->display('');		
     }

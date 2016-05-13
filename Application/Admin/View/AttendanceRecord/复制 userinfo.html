@@ -1,0 +1,74 @@
+<extend name="_Layout/main"/>
+<block name="libs">
+    <script src="http://cdn.hcharts.cn/jquery/jquery-1.8.3.min.js"></script>
+</block>
+
+<block name="main">
+    <div class="container">
+ <script src="http://cdn.hcharts.cn/highcharts/highcharts.js"></script>
+<script src="http://cdn.hcharts.cn/highcharts/modules/exporting.js"></script>
+	<form action="{:U(Admin/AttendanceRecord/userinfo)}" method="post">
+<div>选择您要查看的用户： <input type="text" name="keyword"  value="" placeholder="请输入ID">
+
+    <input value="查看" name="submit" type="submit">
+</div>
+</form>
+<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+    </div>
+</block>
+<block name="script">
+ <script type="text/javascript">
+$(function () {
+    $('#container').highcharts({
+        chart: {
+            type: 'line'
+        },
+        title: {
+            text: '个人打卡时间'
+        },
+        subtitle: {
+            text: '个人每天打卡时间'
+        },
+//      xAxis: {
+//          categories: <?php echo $user_reg_date;?>
+//      },
+		 credits : {
+                enabled:false
+            },
+        yAxis: {
+            title: {
+                text: 'shijian'
+            },
+			type:"datetime",
+			dateTimeLabelFormats:
+                {
+//                      millisecond:"%A, %b %e, %H:%M:%S.%L",
+//  second:"%A, %b %e, %H:%M:%S",
+    minute:"%A, %b %e, %H:%M",
+    hour:"%A, %b %e, %H:%M",
+//  day:"%A, %b %e, %Y",
+//  week:"Week from %A, %b %e, %Y",
+//  month:"%B %Y",
+//  year:"%Y"
+                }
+		
+        },
+        
+        plotOptions: {
+            line: {
+                dataLabels: {
+                    enabled: false
+                },
+                enableMouseTracking: false
+            }
+        },
+        series: [{
+            name: '下班打卡时间',
+            data: [[1200,1274457600000],
+                        [1250,1274544000000],
+                        [1251,1274630400000],]
+        }]
+    });
+});
+		</script>
+</block>
