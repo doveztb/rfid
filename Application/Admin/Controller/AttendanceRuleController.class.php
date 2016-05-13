@@ -126,16 +126,16 @@ class AttendanceRuleController extends AdminController{
 
         if(IS_POST){
             $user_object = D('AttendanceRule');
-			$data = $user_object->create($_POST);
-			if($data){
-				 if($user_object->save($data)){
-                $this->success('更新成功', U('index'));
+			$data = $user_object->create();
+            if($data){
+                if($user_object->save()!== false){
+                    $this->success('更新成功', U('index'));
+                }else{
+                    $this->error('更新失败');
+                }
             }else{
-                $this->error('更新失败', $user_object->getError());
+                $this->error($user_object->getError());
             }
-			}else{
-				$this->error($user_object->getError());
-			}
            
         }else{
             $user_object = D('AttendanceRule');
